@@ -5,6 +5,14 @@ import Context from './Context';
 function ContextProvider({ children }) {
   const [planets, setPlanets] = useState([]);
 
+  const filterObj = {
+    filterByName: {
+      name: '',
+    },
+  };
+
+  const [filter, setFilter] = useState(filterObj);
+
   useEffect(() => {
     async function fetchPlanets() {
       const data = await fetch('https://swapi.dev/api/planets').then((response) => response.json());
@@ -16,8 +24,24 @@ function ContextProvider({ children }) {
     fetchPlanets();
   }, []);
 
+  const filterName = (event) => {
+    event.preventDefault();
+    setFilter((state) => {
+      const updatedState = { ...state };
+      updatedState.filterByName.name = event.target.value;
+      return updatedState;
+    });
+  };
+
+  const value = {
+    planets,
+    setPlanets,
+    filter,
+    filterName,
+  };
+
   return (
-    <Context.Provider value={ planets }>
+    <Context.Provider value={ value }>
       { children }
     </Context.Provider>
   );

@@ -3,7 +3,33 @@ import Context from '../context/Context';
 import '../css/table.css';
 
 function Table() {
-  const value = useContext(Context);
+  const { planets, filter } = useContext(Context);
+  const planetsFiltered = planets.filter((planet) => (
+    planet.name.includes(filter.filterByName.name)
+    || planet.name.toUpperCase().includes(filter.filterByName.name)
+    || planet.name.toLowerCase().includes(filter.filterByName.name)
+  ));
+
+  const tableLineGenerator = (planetsList) => (
+    planetsList.map((planet) => (
+      <tr key={ planet.url }>
+        <td>{ planet.name }</td>
+        <td>{ planet.rotation_period }</td>
+        <td>{ planet.orbital_period }</td>
+        <td>{ planet.diameter }</td>
+        <td>{ planet.climate }</td>
+        <td>{ planet.gravity }</td>
+        <td>{ planet.terrain }</td>
+        <td>{ planet.surface_water }</td>
+        <td>{ planet.population }</td>
+        <td>{ planet.films.map((film) => <p key={ film }>{ film }</p>) }</td>
+        <td>{ planet.created }</td>
+        <td>{ planet.edited }</td>
+        <td>{ planet.url }</td>
+      </tr>
+    ))
+  );
+
   return (
     <div>
       <table>
@@ -25,23 +51,11 @@ function Table() {
           </tr>
         </thead>
         <tbody>
-          { value.map((planet) => (
-            <tr key={ planet.url }>
-              <td>{ planet.name }</td>
-              <td>{ planet.rotation_period }</td>
-              <td>{ planet.orbital_period }</td>
-              <td>{ planet.diameter }</td>
-              <td>{ planet.climate }</td>
-              <td>{ planet.gravity }</td>
-              <td>{ planet.terrain }</td>
-              <td>{ planet.surface_water }</td>
-              <td>{ planet.population }</td>
-              <td>{ planet.films.map((film) => <p key={ film }>{ film }</p>) }</td>
-              <td>{ planet.created }</td>
-              <td>{ planet.edited }</td>
-              <td>{ planet.url }</td>
-            </tr>
-          )) }
+          {
+            !filter.filterByName.name
+              ? tableLineGenerator(planets)
+              : tableLineGenerator(planetsFiltered)
+          }
         </tbody>
       </table>
     </div>

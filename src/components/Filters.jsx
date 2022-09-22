@@ -1,7 +1,8 @@
-import React, { useContext } from 'react';
+import React, { useContext, useRef, useEffect } from 'react';
 import Context from '../context/Context';
 
 function Filters() {
+  const inputRef = useRef(null);
   const {
     filter,
     filterName,
@@ -10,13 +11,19 @@ function Filters() {
     filtersList,
   } = useContext(Context);
 
+  useEffect(() => {
+    if (inputRef) {
+      inputRef.current.focus();
+    }
+  }, [inputRef]);
+
   const addFilter = () => {
     const { filterByNumericValues } = filter;
     setFiltersList((state) => (filtersList.concat({
       id: state.length,
-      column: filterByNumericValues[0].column,
-      comparison: filterByNumericValues[0].comparison,
-      value: Number(filterByNumericValues[0].value),
+      column: filterByNumericValues.column,
+      comparison: filterByNumericValues.comparison,
+      value: Number(filterByNumericValues.value),
     })));
   };
 
@@ -34,8 +41,9 @@ function Filters() {
 
   return (
     <div>
-      <label htmlFor="filter-form">
+      <form>
         <input
+          ref={ inputRef }
           className="filter-by-name"
           value={ filter.filterByName.name }
           type="text"
@@ -44,7 +52,7 @@ function Filters() {
         />
         <label htmlFor="select-column">
           <select
-            value={ filter.filterByNumericValues[0].column }
+            value={ filter.filterByNumericValues.column }
             name="column"
             data-testid="column-filter"
             onChange={ numberFilters }
@@ -57,7 +65,7 @@ function Filters() {
           </select>
           <select
             name="comparison"
-            value={ filter.filterByNumericValues[0].comparison }
+            value={ filter.filterByNumericValues.comparison }
             data-testid="comparison-filter"
             onChange={ numberFilters }
           >
@@ -66,7 +74,7 @@ function Filters() {
             <option value="igual a">igual a</option>
           </select>
           <input
-            value={ filter.filterByNumericValues[0].value }
+            value={ filter.filterByNumericValues.value }
             name="value"
             type="number"
             data-testid="value-filter"
@@ -80,7 +88,7 @@ function Filters() {
             FILTRAR
           </button>
         </label>
-      </label>
+      </form>
       {
         filtersList.map((filt, i) => (
           <div

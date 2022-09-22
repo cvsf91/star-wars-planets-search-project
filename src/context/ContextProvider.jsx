@@ -11,13 +11,11 @@ function ContextProvider({ children }) {
     filterByName: {
       name: '',
     },
-    filterByNumericValues: [
-      {
-        column: 'population',
-        comparison: 'maior que',
-        value: 0,
-      },
-    ],
+    filterByNumericValues: {
+      column: 'population',
+      comparison: 'maior que',
+      value: 0,
+    },
   };
 
   const [filter, setFilter] = useState(filterObj);
@@ -39,20 +37,23 @@ function ContextProvider({ children }) {
 
   const filterName = (event) => {
     event.preventDefault();
-    setFilter((state) => {
-      const updatedState = { ...state };
-      updatedState.filterByName.name = event.target.value;
-      return updatedState;
+    setFilter({
+      ...filter,
+      filterByName: {
+        name: event.target.value,
+      },
     });
   };
 
   const numberFilters = (event) => {
     event.preventDefault();
     const { target: { value, name } } = event;
-    setFilter((state) => {
-      const updatedState = { ...state };
-      updatedState.filterByNumericValues[0][name] = value;
-      return updatedState;
+    setFilter({
+      ...filter,
+      filterByNumericValues: {
+        ...filter.filterByNumericValues,
+        [name]: value,
+      },
     });
   };
 

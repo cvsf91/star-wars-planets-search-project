@@ -21,14 +21,11 @@ describe('Application tests', () => {
       planetsNameList.forEach((planet) => expect(planet).toBeInTheDocument());
     });
 
+    const planet = screen.getByRole('cell', { name: /alderaan/i });
+    expect(planet).toBeInTheDocument();
     userEvent.type(nameFilter, 'tatooine');
-
-    const planetFiltered = await screen.findByRole('cell', { name: /tatooine/i });
-    const planetFiltered2 = await screen.findByRole('cell', { name: /alderaan/i });
-    // await waitForElementToBeRemoved(planetFiltered2)
-    await waitFor(() => {
-      expect(planetFiltered).toBeInTheDocument();
-      expect(planetFiltered2).not.toBeInTheDocument();
-    });
-  })
+    expect(planet).not.toBeInTheDocument();
+    const lineTableElement = screen.getAllByRole('row');
+    expect(lineTableElement).toHaveLength(2);
+  });
 });

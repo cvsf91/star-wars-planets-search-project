@@ -24,11 +24,11 @@ describe('Application tests', () => {
     userEvent.type(nameFilter, 'tatooine');
 
     const planetFiltered = await screen.findByRole('cell', { name: /tatooine/i });
-    // const planetFiltered2 = await screen.findByRole('cell', { name: /alderaan/i });
+    const planetFiltered2 = await screen.findByRole('cell', { name: /alderaan/i });
     // await waitForElementToBeRemoved(planetFiltered2)
     await waitFor(() => {
       expect(planetFiltered).toBeInTheDocument();
-      // expect(planetFiltered2).not.toBeInTheDocument();
+      expect(planetFiltered2).not.toBeInTheDocument();
     });
   })
 });

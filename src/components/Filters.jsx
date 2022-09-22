@@ -12,11 +12,24 @@ function Filters() {
 
   const addFilter = () => {
     const { filterByNumericValues } = filter;
-    setFiltersList(filtersList.concat({
+    setFiltersList((state) => (filtersList.concat({
+      id: state.length,
       column: filterByNumericValues[0].column,
       comparison: filterByNumericValues[0].comparison,
       value: Number(filterByNumericValues[0].value),
-    }));
+    })));
+  };
+
+  const removeFilter = ({ target: { id } }) => {
+    setFiltersList((oldFiltList) => {
+      const stateFiltered = oldFiltList
+        .filter((filtEl) => Number(filtEl.id) !== Number(id));
+      return stateFiltered;
+    });
+  };
+
+  const removeAllFilters = () => {
+    setFiltersList([]);
   };
 
   return (
@@ -70,9 +83,30 @@ function Filters() {
       </label>
       {
         filtersList.map((filt, i) => (
-          <p key={ i }>{`${filt.column} ${filt.comparison} ${filt.value}`}</p>
+          <div
+            key={ i + filt.column + filt.comparison + filt.value }
+            data-testid="filter"
+          >
+            <p>
+              {`${filt.column} ${filt.comparison} ${filt.value}`}
+            </p>
+            <button
+              id={ filt.id }
+              type="button"
+              onClick={ removeFilter }
+            >
+              Remover Filtro
+            </button>
+          </div>
         ))
       }
+      <button
+        data-testid="button-remove-filters"
+        type="button"
+        onClick={ removeAllFilters }
+      >
+        Remover todas filtragens
+      </button>
     </div>
   );
 }

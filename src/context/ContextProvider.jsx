@@ -5,10 +5,19 @@ import Context from './Context';
 function ContextProvider({ children }) {
   const [planets, setPlanets] = useState([]);
 
+  const [filtersList, setFiltersList] = useState([]);
+
   const filterObj = {
     filterByName: {
       name: '',
     },
+    filterByNumericValues: [
+      {
+        column: 'population',
+        comparison: 'maior que',
+        value: 0,
+      },
+    ],
   };
 
   const [filter, setFilter] = useState(filterObj);
@@ -33,11 +42,24 @@ function ContextProvider({ children }) {
     });
   };
 
+  const numberFilters = (event) => {
+    event.preventDefault();
+    const { target: { value, name } } = event;
+    setFilter((state) => {
+      const updatedState = { ...state };
+      updatedState.filterByNumericValues[0][name] = value;
+      return updatedState;
+    });
+  };
+
   const value = {
     planets,
     setPlanets,
     filter,
     filterName,
+    numberFilters,
+    setFiltersList,
+    filtersList,
   };
 
   return (

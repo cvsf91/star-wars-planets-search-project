@@ -3,12 +3,22 @@ import Context from '../context/Context';
 import '../css/table.css';
 
 function Table() {
-  const { planets, filter } = useContext(Context);
+  const { planets, filter, filtersList } = useContext(Context);
   const planetsFiltered = planets.filter((planet) => (
     planet.name.includes(filter.filterByName.name)
     || planet.name.toUpperCase().includes(filter.filterByName.name)
     || planet.name.toLowerCase().includes(filter.filterByName.name)
   ));
+
+  const planetsFilteredByNumericValues = planetsFiltered
+    .filter((planet) => filtersList.every((element) => {
+      if (element.comparison === 'maior que') {
+        return Number(planet[element.column]) > Number(element.value);
+      } if (element.comparison === 'menor que') {
+        return Number(planet[element.column]) < Number(element.value);
+      }
+      return Number(planet[element.column]) === Number(element.value);
+    }));
 
   const tableLineGenerator = (planetsList) => (
     planetsList.map((planet) => (
@@ -52,9 +62,9 @@ function Table() {
         </thead>
         <tbody>
           {
-            !filter.filterByName.name
+            !filter.filterByName.name && filtersList.length === 0
               ? tableLineGenerator(planets)
-              : tableLineGenerator(planetsFiltered)
+              : tableLineGenerator(planetsFilteredByNumericValues)
           }
         </tbody>
       </table>

@@ -24,11 +24,15 @@ function ContextProvider({ children }) {
 
   useEffect(() => {
     async function fetchPlanets() {
-      const data = await fetch('https://swapi.dev/api/planets').then((response) => response.json());
-      data.results.forEach((planet) => {
-        delete planet.residents;
-      });
-      setPlanets(data.results);
+      try {
+        const data = await fetch('https://swapi.dev/api/planets').then((response) => response.json());
+        data.results.forEach((planet) => {
+          delete planet.residents;
+        });
+        setPlanets(data.results);
+      } catch (error) {
+        console.log('Nenhum planeta foi encontrado');
+      }
     }
     fetchPlanets();
   }, []);

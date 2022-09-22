@@ -23,7 +23,7 @@ function Table() {
   const tableLineGenerator = (planetsList) => (
     planetsList.map((planet) => (
       <tr key={ planet.url }>
-        <td>{ planet.name }</td>
+        <td data-testid="planet-name">{ planet.name }</td>
         <td>{ planet.rotation_period }</td>
         <td>{ planet.orbital_period }</td>
         <td>{ planet.diameter }</td>
@@ -42,7 +42,7 @@ function Table() {
 
   return (
     <div>
-      <table>
+      <table id="planets-table">
         <thead>
           <tr>
             <th>Name</th>

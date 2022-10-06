@@ -5,20 +5,36 @@ import '../css/table.css';
 function Table() {
   const { planets, filter, filtersList } = useContext(Context);
   const planetsFiltered = planets.filter((planet) => (
-    planet.name.includes(filter.filterByName.name)
-    || planet.name.toUpperCase().includes(filter.filterByName.name)
-    || planet.name.toLowerCase().includes(filter.filterByName.name)
+    planet.name.toLowerCase().includes(filter.filterByName.name.toLowerCase())
   ));
 
   const planetsFilteredByNumericValues = planetsFiltered
     .filter((planet) => filtersList.every((element) => {
-      if (element.comparison === 'maior que') {
+      switch (element.comparison) {
+      case 'maior que':
         return Number(planet[element.column]) > Number(element.value);
-      } if (element.comparison === 'menor que') {
+      case 'menor que':
         return Number(planet[element.column]) < Number(element.value);
+      default:
+        return Number(planet[element.column]) === Number(element.value);
       }
-      return Number(planet[element.column]) === Number(element.value);
     }));
+
+  const tableTHs = [
+    'Name',
+    'Rotation Period',
+    'Orbital Period',
+    'Diameter',
+    'Climate',
+    'Gravity',
+    'Terrain',
+    'Surface Water',
+    'Population',
+    'Films',
+    'Created',
+    'Edited',
+    'URL',
+  ];
 
   const tableLineGenerator = (planetsList) => (
     planetsList.map((planet) => (
@@ -45,19 +61,7 @@ function Table() {
       <table id="planets-table">
         <thead>
           <tr>
-            <th>Name</th>
-            <th>Rotation Period</th>
-            <th>Orbital Period</th>
-            <th>Diameter</th>
-            <th>Climate</th>
-            <th>Gravity</th>
-            <th>Terrain</th>
-            <th>Surface Water</th>
-            <th>Population</th>
-            <th>Films</th>
-            <th>Created</th>
-            <th>Edited</th>
-            <th>URL</th>
+            { tableTHs.map((th) => <th key={ th }>{ th }</th>) }
           </tr>
         </thead>
         <tbody>

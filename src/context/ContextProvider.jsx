@@ -7,14 +7,24 @@ function ContextProvider({ children }) {
 
   const [filtersList, setFiltersList] = useState([]);
 
+  const COLUMNS = [
+    'population',
+    'orbital_period',
+    'diameter',
+    'rotation_period',
+    'surface_water',
+  ];
+
+  const [options, setOptions] = useState(COLUMNS);
+
   const filterObj = {
     filterByName: {
       name: '',
     },
     filterByNumericValues: {
-      column: 'population',
-      comparison: 'maior que',
-      value: 0,
+      column: '',
+      comparison: '',
+      value: '',
     },
   };
 
@@ -33,7 +43,26 @@ function ContextProvider({ children }) {
       }
     }
     fetchPlanets();
+    setFilter({
+      ...filter,
+      filterByNumericValues: {
+        column: 'population',
+        comparison: 'maior que',
+        value: '0',
+      },
+    });
   }, []);
+
+  useEffect(() => {
+    setFilter({
+      ...filter,
+      filterByNumericValues: {
+        column: options.length > 0 ? options[0] : '',
+        comparison: 'maior que',
+        value: '0',
+      },
+    });
+  }, [filtersList]);
 
   const filterName = (event) => {
     event.preventDefault();
@@ -57,14 +86,42 @@ function ContextProvider({ children }) {
     });
   };
 
+  const addFilter = (filters) => {
+    setFiltersList(filtersList.concat({
+      id: filtersList.length,
+      column: filters.column,
+      comparison: filters.comparison,
+      value: Number(filters.value),
+    }));
+    const newOptions = options.filter((column) => column !== filters.column);
+    setOptions(newOptions);
+  };
+
+  const removeFilter = ({ target: { id } }) => {
+    setFiltersList((oldFiltList) => {
+      const stateFiltered = oldFiltList
+        .filter((filtEl) => Number(filtEl.id) !== Number(id));
+      return stateFiltered;
+    });
+  };
+
+  const removeAllFilters = () => {
+    setFiltersList([]);
+    setOptions(COLUMNS);
+  };
+
   const value = {
     planets,
     setPlanets,
+    options,
     filter,
     filterName,
     numberFilters,
     setFiltersList,
     filtersList,
+    addFilter,
+    removeFilter,
+    removeAllFilters,
   };
 
   return (

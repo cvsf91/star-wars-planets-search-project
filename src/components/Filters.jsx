@@ -6,9 +6,12 @@ function Filters() {
   const {
     filter,
     filterName,
+    options,
     numberFilters,
-    setFiltersList,
     filtersList,
+    addFilter,
+    removeFilter,
+    removeAllFilters,
   } = useContext(Context);
 
   useEffect(() => {
@@ -16,28 +19,6 @@ function Filters() {
       inputRef.current.focus();
     }
   }, [inputRef]);
-
-  const addFilter = () => {
-    const { filterByNumericValues } = filter;
-    setFiltersList((state) => (filtersList.concat({
-      id: state.length,
-      column: filterByNumericValues.column,
-      comparison: filterByNumericValues.comparison,
-      value: Number(filterByNumericValues.value),
-    })));
-  };
-
-  const removeFilter = ({ target: { id } }) => {
-    setFiltersList((oldFiltList) => {
-      const stateFiltered = oldFiltList
-        .filter((filtEl) => Number(filtEl.id) !== Number(id));
-      return stateFiltered;
-    });
-  };
-
-  const removeAllFilters = () => {
-    setFiltersList([]);
-  };
 
   return (
     <div>
@@ -57,15 +38,13 @@ function Filters() {
             data-testid="column-filter"
             onChange={ numberFilters }
           >
-            <option value="population">population</option>
-            <option value="orbital_period">orbital_period</option>
-            <option value="diameter">diameter</option>
-            <option value="rotation_period">rotation_period</option>
-            <option value="surface_water">surface_water</option>
+            { options.map((option, i) => (
+              <option value={ option } key={ option + i }>{ option }</option>
+            )) }
           </select>
           <select
-            name="comparison"
             value={ filter.filterByNumericValues.comparison }
+            name="comparison"
             data-testid="comparison-filter"
             onChange={ numberFilters }
           >
@@ -83,7 +62,7 @@ function Filters() {
           <button
             type="button"
             data-testid="button-filter"
-            onClick={ addFilter }
+            onClick={ () => addFilter(filter.filterByNumericValues) }
           >
             FILTRAR
           </button>

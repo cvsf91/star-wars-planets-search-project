@@ -1,7 +1,6 @@
 import React, { useContext } from 'react';
 import Context from '../context/Context';
 import '../css/table.css';
-import { TABLE_THS } from '../utils/content';
 
 function Table() {
   const { planets, filter, filtersList } = useContext(Context);
@@ -20,6 +19,22 @@ function Table() {
         return Number(planet[element.column]) === Number(element.value);
       }
     }));
+
+  const TABLE_THS = [
+    'Name',
+    'Rotation Period',
+    'Orbital Period',
+    'Diameter',
+    'Climate',
+    'Gravity',
+    'Terrain',
+    'Surface Water',
+    'Population',
+    'Films',
+    'Created',
+    'Edited',
+    'URL',
+  ];
 
   const tableLineGenerator = (planetsList) => (
     planetsList.map((planet) => (

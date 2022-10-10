@@ -1,12 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Context from './Context';
-import { COLUMNS } from '../utils/content';
 
 function ContextProvider({ children }) {
   const [planets, setPlanets] = useState([]);
   const [filtBtnDisable, setDisabled] = useState(false);
   const [filtersList, setFiltersList] = useState([]);
+
+  const COLUMNS = [
+    'population',
+    'orbital_period',
+    'diameter',
+    'rotation_period',
+    'surface_water',
+  ];
 
   const [options, setOptions] = useState(COLUMNS);
 

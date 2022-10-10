@@ -1,19 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Context from './Context';
+import { COLUMNS } from '../utils/content';
 
 function ContextProvider({ children }) {
   const [planets, setPlanets] = useState([]);
-
+  const [filtBtnDisable, setDisabled] = useState(false);
   const [filtersList, setFiltersList] = useState([]);
-
-  const COLUMNS = [
-    'population',
-    'orbital_period',
-    'diameter',
-    'rotation_period',
-    'surface_water',
-  ];
 
   const [options, setOptions] = useState(COLUMNS);
 
@@ -25,6 +18,10 @@ function ContextProvider({ children }) {
       column: '',
       comparison: '',
       value: '',
+    },
+    order: {
+      column: '',
+      sort: '',
     },
   };
 
@@ -45,6 +42,10 @@ function ContextProvider({ children }) {
     fetchPlanets();
     setFilter({
       ...filter,
+      order: {
+        ...filter.order,
+        column: 'population',
+      },
       filterByNumericValues: {
         column: 'population',
         comparison: 'maior que',
@@ -54,8 +55,17 @@ function ContextProvider({ children }) {
   }, []);
 
   useEffect(() => {
+    if (options.length < 1) {
+      setDisabled(true);
+    } else {
+      setDisabled(false);
+    }
     setFilter({
       ...filter,
+      order: {
+        ...filter.order,
+        column: 'population',
+      },
       filterByNumericValues: {
         column: options.length > 0 ? options[0] : '',
         comparison: 'maior que',
@@ -97,12 +107,47 @@ function ContextProvider({ children }) {
     setOptions(newOptions);
   };
 
-  const removeFilter = ({ target: { id } }) => {
-    setFiltersList((oldFiltList) => {
-      const stateFiltered = oldFiltList
-        .filter((filtEl) => Number(filtEl.id) !== Number(id));
-      return stateFiltered;
+  const ordenateFilters = ({ target: { value } }) => {
+    setFilter({
+      ...filter,
+      order: {
+        ...filter.order,
+        column: value,
+      },
     });
+  };
+
+  const removeFilter = ({ target: { id, name } }) => {
+    setFiltersList(filtersList.filter((filtEl) => Number(filtEl.id) !== Number(id)));
+    setOptions(options.concat(name));
+  };
+
+  const setTypeOrder = ({ target: { value } }) => {
+    setFilter({
+      ...filter,
+      order: {
+        ...filter.order,
+        sort: value,
+      },
+    });
+  };
+
+  const ordenatePlanets = (e) => {
+    e.preventDefault();
+    const { order: { sort, column } } = filter;
+    const unknownPlanets = planets.filter((planet) => (
+      planet[column] === 'unknown'
+    ));
+    const planetsValuesKnown = planets.filter((planet) => (
+      planet[column] !== 'unknown'
+    ));
+    const orderedPlanets = planetsValuesKnown.sort((a, b) => {
+      if (sort === 'ASC') {
+        return a[column] - b[column];
+      }
+      return b[column] - a[column];
+    });
+    setPlanets(orderedPlanets.concat(unknownPlanets));
   };
 
   const removeAllFilters = () => {
@@ -114,14 +159,19 @@ function ContextProvider({ children }) {
     planets,
     setPlanets,
     options,
+    COLUMNS,
     filter,
     filterName,
     numberFilters,
+    ordenateFilters,
     setFiltersList,
     filtersList,
     addFilter,
+    setTypeOrder,
     removeFilter,
     removeAllFilters,
+    filtBtnDisable,
+    ordenatePlanets,
   };
 
   return (

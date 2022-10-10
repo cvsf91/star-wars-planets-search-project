@@ -39,9 +39,9 @@ describe('Application tests', () => {
     render(<App />);
     const planetsNameList = await screen.findAllByTestId('planet-name');
     expect(planetsNameList).toHaveLength(10)
-    const orbitalPeriodOption = screen.getByRole('option', { name: 'orbital_period' });
+    const orbitalPeriodOptions = screen.getAllByRole('option', { name: 'orbital_period' });
     // const valueInput = screen.getByRole('textbox', { name: 'value' });
     // expect(valueInput).toBeInTheDocument();
-    expect(orbitalPeriodOption).toBeInTheDocument();
+    expect(orbitalPeriodOptions[0]).toBeInTheDocument();
   });
 });

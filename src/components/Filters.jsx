@@ -17,6 +17,7 @@ function Filters() {
     filtBtnDisable,
     setTypeOrder,
     ordenatePlanets,
+    ordenateValues,
   } = useContext(Context);
 
   useEffect(() => {
@@ -93,6 +94,7 @@ function Filters() {
             type="radio"
             name="type-order"
             value="ASC"
+            checked={ ordenateValues.ASC }
             onChange={ setTypeOrder }
           />
           ASC
@@ -104,6 +106,7 @@ function Filters() {
             type="radio"
             name="type-order"
             value="DESC"
+            checked={ ordenateValues.DESC }
             onChange={ setTypeOrder }
           />
           DESC

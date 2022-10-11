@@ -104,4 +104,15 @@ describe('Application tests', () => {
 
     expect(screen.queryAllByTestId('planet-name')).toHaveLength(0)
   })
+  it('should remove the filter', () => {
+    userEvent.selectOptions(screen.getByTestId('column-filter'), 'orbital_period');
+    userEvent.selectOptions(screen.getByTestId('comparison-filter'), 'menor que');
+    userEvent.click(screen.getByRole('button', { name: /filtrar/i }));
+    userEvent.click(screen.getByRole('button', { name: /filtrar/i }));
+    expect(screen.queryAllByTestId('planet-name')).toHaveLength(0)
+    userEvent.click(screen.getAllByRole('button', { name: /remover filtro/i })[0]);
+    expect(screen.queryAllByTestId('planet-name')).toHaveLength(8);
+    userEvent.click(screen.getByRole('button', { name: /remover todas filtragens/i }))
+    expect(screen.queryAllByTestId('planet-name')).toHaveLength(10);
+  });
 });

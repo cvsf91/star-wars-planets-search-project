@@ -1,8 +1,7 @@
-import React, { useContext, useRef, useEffect } from 'react';
+import React, { useContext } from 'react';
 import Context from '../context/Context';
 
 function Filters() {
-  const inputRef = useRef(null);
   const {
     filter,
     filterName,
@@ -20,17 +19,10 @@ function Filters() {
     ordenateValues,
   } = useContext(Context);
 
-  useEffect(() => {
-    if (inputRef) {
-      inputRef.current.focus();
-    }
-  }, [inputRef]);
-
   return (
     <div>
       <form>
         <input
-          ref={ inputRef }
           className="filter-by-name"
           value={ filter.filterByName.name }
           type="text"
@@ -120,9 +112,9 @@ function Filters() {
         </button>
       </form>
       {
-        filtersList.map((filt) => (
+        filtersList.map((filt, i) => (
           <div
-            key={ filt.column }
+            key={ filt.column + i }
             data-testid="filter"
           >
             <p>

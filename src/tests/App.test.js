@@ -1,10 +1,8 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { render, screen, waitFor, waitForElementToBeRemoved } from '@testing-library/react';
 import App from '../App';
-import ContextProvider from '../context/ContextProvider';
 import testData from '../../cypress/mocks/testData';
 import userEvent from '@testing-library/user-event';
-import { act } from 'react-dom/test-utils';
 
 describe('Application tests', () => {
   beforeEach(() => {
@@ -12,10 +10,15 @@ describe('Application tests', () => {
     global.fetch.mockResolvedValue({
       json: jest.fn().mockResolvedValue(testData),
     });
+    render(<App />);
   })
 
-  it('tests name filter input', async () => {
+  afterEach(() => {
+    jest.clearAllMocks();
     render(<App />);
+  });
+
+  it('tests name filter input', async () => {
     const nameFilter = screen.getByTestId('name-filter');
     expect(nameFilter).toBeInTheDocument();
 
@@ -36,7 +39,6 @@ describe('Application tests', () => {
   });
 
   it('tests numeric filters inputs', async () => {
-    render(<App />);
     const planetsNameList = await screen.findAllByTestId('planet-name');
     expect(planetsNameList).toHaveLength(10)
     const orbitalPeriodOptions = screen.getAllByRole('option', { name: 'orbital_period' });
@@ -53,7 +55,6 @@ describe('Application tests', () => {
     })
   });
   it('verify\'s the filter button is disabled when set all the possible filters', () => {
-    render(<App />);
     const optionsColumnFilter = screen.getByTestId('column-sort').childNodes
 
     const filterButton = screen.getByRole('button', { name: /filtrar/i });
@@ -63,8 +64,6 @@ describe('Application tests', () => {
     expect(filterButton).toBeDisabled()
   })
   it('should ordenate the planets', async () => {
-    render(<App />);
-
     await waitFor(() => {
     const ascOrdenateRadio = screen.getByTestId('column-sort-input-asc')
     const descOrdenateRadio = screen.getByTestId('column-sort-input-desc')
@@ -77,4 +76,32 @@ describe('Application tests', () => {
     expect(screen.getAllByTestId('planet-name')[0]).toHaveTextContent(/coruscant/i)
     })
   });
+  it('should filter the planets', async () => {
+    const numericFilterBtn = screen.getByRole('button', { name: /filtrar/i });
+    const clearAllFiltersBtn = screen.getByRole('button', { name: /remover todas filtragens/i });
+    const selectColumnFilter = screen.getByTestId('column-filter')
+    const orbitalPeriodOption = screen.getByTestId('column-filter').childNodes[1]
+    const comparisonFilter = screen.getByTestId('comparison-filter')
+    const minorOption = screen.getByRole('option', { name: 'menor que' })
+    const numericFilterInput = screen.getByRole('textbox', { type: 'number' })
+    await waitFor(() => {
+      userEvent.click(numericFilterBtn)
+    });
+    expect(screen.getAllByTestId('planet-name')).toHaveLength(8);
+    userEvent.click(clearAllFiltersBtn);
+    expect(screen.getAllByTestId('planet-name')).toHaveLength(10);
+
+    userEvent.selectOptions(selectColumnFilter, 'orbital_period');
+    expect(orbitalPeriodOption.selected).toBe(true)
+
+    userEvent.selectOptions(comparisonFilter, 'menor que')
+    expect(minorOption.selected).toBe(true)
+
+    expect(numericFilterInput).toHaveValue('')
+    userEvent.type(numericFilterInput, '0')
+    expect(numericFilterInput).toHaveValue('0')
+    userEvent.click(numericFilterBtn)
+
+    expect(screen.queryAllByTestId('planet-name')).toHaveLength(0)
+  })
 });

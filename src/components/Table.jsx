@@ -10,13 +10,15 @@ function Table() {
 
   const planetsFilteredByNumericValues = planetsFiltered
     .filter((planet) => filtersList.every((element) => {
+      const column = Number(planet[element.column]);
+      const value = Number(element.value);
       switch (element.comparison) {
       case 'maior que':
-        return Number(planet[element.column]) > Number(element.value);
+        return column > value;
       case 'menor que':
-        return Number(planet[element.column]) < Number(element.value);
+        return column < value;
       default:
-        return Number(planet[element.column]) === Number(element.value);
+        return column === value;
       }
     }));
 

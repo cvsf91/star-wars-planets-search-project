@@ -14,9 +14,9 @@ Esta aplicação faz consumo de uma API para que seja possível buscar por plane
 
 Foram utilizadas neste projeto as seguintes tecnologias:
 
-[JavaScript](https://www.javascript.com)
-[React.js](https://reactjs.org)
-[React Testing Library](https://testing-library.com/docs/react-testing-library/intro/)
+- [JavaScript](https://www.javascript.com)
+- [React.js](https://reactjs.org)
+- [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/)
 
 # Como rodar
 
@@ -24,11 +24,9 @@ Para rodar este projeto é necessário que você tenha o [Node Package Manager](
 
 Para começar, inicie clonando o repositório em sua máquina, e vá para a pasta raiz do projeto:
 
-    git clone git@github.com:cvsf91/star-wars-planets-search-project.git
+    git clone git@github.com:cvsf91/star-wars-planets-search-project.git && cd star-wars-planets-search-project/
 
-    cd star-wars-planets-search-project/
-
-Após ir até a pasta raiz, rode o comando:
+Após navegar até a pasta raiz, rode o comando:
 
     npm install
 

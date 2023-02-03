@@ -7,6 +7,10 @@ function ContextProvider({ children }) {
   const [filtBtnDisable, setDisabled] = useState(false);
   const [filtersList, setFiltersList] = useState([]);
 
+  const ORDENATE_VALUES = { ASC: false, DESC: false };
+
+  const [ordenateValues, setOrdenateValues] = useState(ORDENATE_VALUES);
+
   const COLUMNS = [
     'population',
     'orbital_period',
@@ -43,7 +47,7 @@ function ContextProvider({ children }) {
         });
         setPlanets(data.results);
       } catch (error) {
-        console.log('Nenhum planeta foi encontrado');
+        global.alert('Nenhum planeta foi encontrado');
       }
     }
     fetchPlanets();
@@ -80,6 +84,24 @@ function ContextProvider({ children }) {
       },
     });
   }, [filtersList]);
+
+  const ordenatePlanets = () => {
+    const { order: { sort, column } } = filter;
+    const unknownPlanets = planets.filter((planet) => (
+      planet[column] === 'unknown'
+    ));
+    const planetsValuesKnown = planets.filter((planet) => (
+      planet[column] !== 'unknown'
+    ));
+    const orderedPlanets = planetsValuesKnown.sort((a, b) => {
+      if (sort === 'ASC') {
+        return a[column] - b[column];
+      }
+      return b[column] - a[column];
+    });
+    setPlanets(orderedPlanets.concat(unknownPlanets));
+    setOrdenateValues(ORDENATE_VALUES);
+  };
 
   const filterName = (event) => {
     event.preventDefault();
@@ -130,6 +152,7 @@ function ContextProvider({ children }) {
   };
 
   const setTypeOrder = ({ target: { value } }) => {
+    setOrdenateValues({ ...ordenateValues, [value]: !ordenateValues[value] });
     setFilter({
       ...filter,
       order: {
@@ -137,24 +160,6 @@ function ContextProvider({ children }) {
         sort: value,
       },
     });
-  };
-
-  const ordenatePlanets = (e) => {
-    e.preventDefault();
-    const { order: { sort, column } } = filter;
-    const unknownPlanets = planets.filter((planet) => (
-      planet[column] === 'unknown'
-    ));
-    const planetsValuesKnown = planets.filter((planet) => (
-      planet[column] !== 'unknown'
-    ));
-    const orderedPlanets = planetsValuesKnown.sort((a, b) => {
-      if (sort === 'ASC') {
-        return a[column] - b[column];
-      }
-      return b[column] - a[column];
-    });
-    setPlanets(orderedPlanets.concat(unknownPlanets));
   };
 
   const removeAllFilters = () => {
@@ -179,6 +184,7 @@ function ContextProvider({ children }) {
     removeAllFilters,
     filtBtnDisable,
     ordenatePlanets,
+    ordenateValues,
   };
 
   return (

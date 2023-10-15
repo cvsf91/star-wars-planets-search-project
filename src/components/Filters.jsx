@@ -22,13 +22,17 @@ function Filters() {
   return (
     <div>
       <form>
-        <input
-          className="filter-by-name"
-          value={ filter.filterByName.name }
-          type="text"
-          data-testid="name-filter"
-          onChange={ filterName }
-        />
+        <label htmlFor="input-name">
+          NOME
+          <input
+            name="input-name"
+            className="filter-by-name"
+            value={ filter.filterByName.name }
+            type="text"
+            data-testid="name-filter"
+            onChange={ filterName }
+          />
+        </label>
         <label htmlFor="select-column">
           { options.length > 0
           && (
@@ -49,9 +53,9 @@ function Filters() {
             data-testid="comparison-filter"
             onChange={ numberFilters }
           >
-            <option value="maior que">maior que</option>
-            <option value="menor que">menor que</option>
-            <option value="igual a">igual a</option>
+            <option value="maior que">MAIOR QUE</option>
+            <option value="menor que">MENOR QUE</option>
+            <option value="igual a">IGUAL A</option>
           </select>
           <input
             value={ filter.filterByNumericValues.value }
